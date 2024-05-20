@@ -69,6 +69,18 @@ describe('Colon path params conversion', () => {
     expect(convertColonPathParams('path1/{pathParam}')).to.equal('path1/{pathParam}');
   });
 
+  it('should not modify paths with the backslash-escaped', () => {
+    expect(convertColonPathParams('path1\\:pathParam')).to.equal('path1:pathParam');
+    expect(convertColonPathParams('path1/:pathParam\\:path2')).to.equal('path1/{pathParam}:path2');
+    expect(convertColonPathParams('path1/:pathParam\\:path2/path3')).to.equal('path1/{pathParam}:path2/path3');
+    expect(convertColonPathParams('path1/:pathParam\\:path2/path3')).to.equal('path1/{pathParam}:path2/path3');
+    expect(convertColonPathParams('path1/:pathParam1\\:path2:pathParam2/path3')).to.equal('path1/{pathParam1}:path2{pathParam2}/path3');
+    expect(convertColonPathParams('path1/:pathParam1\\:path2:pathParam2\\:path3/path4')).to.equal('path1/{pathParam1}:path2{pathParam2}:path3/path4');
+    expect(convertColonPathParams('path1/:pathParam1\\:path2:pathParam2\\:path3/path4:pathParam3')).to.equal('path1/{pathParam1}:path2{pathParam2}:path3/path4{pathParam3}');
+    expect(convertColonPathParams('path1/:pathParam1\\:path2:pathParam2\\:path3/path4\\:path5')).to.equal('path1/{pathParam1}:path2{pathParam2}:path3/path4:path5');
+    expect(convertColonPathParams('path1/:pathParam1\\:path2:pathParam2\\:path3:pathParam3/path4\\:path5')).to.equal('path1/{pathParam1}:path2{pathParam2}:path3{pathParam3}/path4:path5');
+  });
+
   it('should replace ":param" with "{param}" in path', () => {
     expect(convertColonPathParams(':pathParam')).to.equal('{pathParam}');
     expect(convertColonPathParams('/path1/:pathParam')).to.equal('/path1/{pathParam}');
